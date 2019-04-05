@@ -9,5 +9,5 @@ app.use(express.static(path.join(__dirname , '../public')))
 
 
 app.listen(port, function () {
-  console.log(`Our Port Is Listening At Port No. 3000`)
+  console.log(`Our Port Is Listening At Port No. ${port}`)
 })
