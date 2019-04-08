@@ -11,5 +11,5 @@
           })
 
     socket.on('newMessage', function(message){         // For Listening Events Produced By Socket Emiting
-        console.log(message )
+        console.log('newMessage',message )
       })

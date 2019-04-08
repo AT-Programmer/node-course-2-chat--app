@@ -16,15 +16,32 @@ app.use(express.static(path.join(__dirname , '../public')))
 io.on('connection' , function(socket){
   console.log('New User Is Connected!')
 
+  socket.emit('newMessage', {
+    from: 'Admin',
+    text: 'Welcome To The Chat App!',
+    createdAt: new Date().getTime()
+  })
+
+  socket.broadcast.emit('newMessage', {
+    from : 'Admin',
+    text: 'New User Joined',
+    createdAt: new Date().getTime()
+  })
 
   socket.on('createMessage', function(message){
   console.log('createMessage',message)
 
-    io.emit('newMessage', {
+    io.emit('newMessage', {                        //  for Sending The Message For All Online Users
       from : message.from,
       text: message.text,
       createdAt: new Date().getTime()
     });
+
+    // socket.broadcast.emit('newMessage', {
+    //   from: message.from,                                   // For Show Message Only On Others Not For Him
+    //   text: message.text,
+    //   createdAt: new Date().getTime()
+    // })
   });
 
   socket.on('disconnect' , (socket) => {
