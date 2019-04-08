@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000;
 var app = express()
 var server = http.createServer(app)
 var io = socketIO(server)  // For Connecting Socket Io To The Server
-
+var {generateMessage} = require('./utils/message')
 app.use(express.static(path.join(__dirname , '../public')))
 
 
@@ -16,26 +16,14 @@ app.use(express.static(path.join(__dirname , '../public')))
 io.on('connection' , function(socket){
   console.log('New User Is Connected!')
 
-  socket.emit('newMessage', {
-    from: 'Admin',
-    text: 'Welcome To The Chat App!',
-    createdAt: new Date().getTime()
-  })
+  socket.emit('newMessage', generateMessage('Admin','Welcome To The Chat App'))
 
-  socket.broadcast.emit('newMessage', {
-    from : 'Admin',
-    text: 'New User Joined',
-    createdAt: new Date().getTime()
-  })
+  socket.broadcast.emit('newMessage', generateMessage('Admin', 'New User Joined!'))
 
   socket.on('createMessage', function(message){
   console.log('createMessage',message)
 
-    io.emit('newMessage', {                        //  for Sending The Message For All Online Users
-      from : message.from,
-      text: message.text,
-      createdAt: new Date().getTime()
-    });
+    io.emit('newMessage', generateMessage(message.from,message.text));
 
     // socket.broadcast.emit('newMessage', {
     //   from: message.from,                                   // For Show Message Only On Others Not For Him
