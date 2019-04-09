@@ -8,7 +8,8 @@ const port = process.env.PORT || 3000;
 var app = express()
 var server = http.createServer(app)
 var io = socketIO(server)  // For Connecting Socket Io To The Server
-var {generateMessage} = require('./utils/message')
+var {generateMessage, generateLocationMessage} = require('./utils/message')
+
 app.use(express.static(path.join(__dirname , '../public')))
 
 
@@ -26,12 +27,14 @@ io.on('connection' , function(socket){
     io.emit('newMessage', generateMessage(message.from,message.text));
     callback('This Is From The Server')
 
-    // socket.broadcast.emit('newMessage', {
-    //   from: message.from,                                   // For Show Message Only On Others Not For Him
-    //   text: message.text,
-    //   createdAt: new Date().getTime()
-    // })
+
   });
+
+  socket.on('CreateLocationButton', function(coords){
+    io.emit('newLocationMessage',generateLocationMessage('Admin : ', coords.latitude, coords.longitude))
+  })
+
+
 
   socket.on('disconnect' , (socket) => {
     console.log('1 User Is DisConnected!')
